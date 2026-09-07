@@ -1,6 +1,6 @@
-# HENTER BODEN — $HENTER
+# HENTER BODEN LAPTOP — $HENTER
 
-Memecoin landing page for **HENTER BODEN**, ticker **$HENTER**, live on **Robinhood Chain**
+Memecoin landing page for **HENTER BODEN LAPTOP**, ticker **$HENTER**, live on **Robinhood Chain**
 (Arbitrum Orbit L2, gas paid in ETH).
 
 Hand drawn comic styling built from the artwork palette: lime `#DAF326`, ink `#101014`,
