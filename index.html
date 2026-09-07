@@ -86,8 +86,8 @@
         <div class="ca">
           <div class="ca-label">Contract address</div>
           <div class="ca-row">
-            <code id="caText">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code>
-            <button class="ca-copy" id="copyBtn" data-copy="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+            <code id="caText">0xDC1bebBE6699242e0fD33E5B8ce2D369e582466a</code>
+            <button class="ca-copy" id="copyBtn" data-copy="0xDC1bebBE6699242e0fD33E5B8ce2D369e582466a">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9V5.5A1.5 1.5 0 0 1 10.5 4h8A1.5 1.5 0 0 1 20 5.5v8a1.5 1.5 0 0 1-1.5 1.5H15"/><rect x="4" y="9" width="11" height="11" rx="1.5"/></svg>
               <span>Copy</span>
             </button>
@@ -96,7 +96,7 @@
 
         <div class="hero-btns">
           <a class="btn btn-primary" href="#buy">Buy $HENTER</a>
-          <a class="btn btn-ghost" href="#" target="_blank" rel="noopener">View chart</a>
+          <a class="btn btn-ghost" href="https://dexscreener.com/robinhood/0x00d33cec2506c71a74a24c20f48d62dceb9653752998f1016c6474e814ca6839" target="_blank" rel="noopener">View chart</a>
         </div>
 
         <ul class="hero-trust">
@@ -116,11 +116,17 @@
     </div>
   </section>
 
-  <section class="stats wrap">
-    <div class="stat reveal"><b>1,000,000,000</b><small>Total supply</small></div>
-    <div class="stat reveal" style="--d:.06s"><b class="count" data-to="100" data-suffix="%">0</b><small>LP burned</small></div>
-    <div class="stat reveal" style="--d:.12s"><b>0 / 0</b><small>Buy / sell tax</small></div>
-    <div class="stat reveal" style="--d:.18s"><b>0</b><small>Consequences faced</small></div>
+  <section class="market wrap" id="market" hidden>
+    <div class="stats">
+      <div class="stat"><b id="mPrice">—</b><small>Price</small></div>
+      <div class="stat" id="mChangeTile"><b id="mChange">—</b><small>24h change</small></div>
+      <div class="stat"><b id="mCap">—</b><small>Market cap</small></div>
+      <div class="stat"><b id="mLiq">—</b><small>Liquidity</small></div>
+    </div>
+    <p class="market-note">
+      Live from Dexscreener, refreshed every 45 seconds.
+      <a href="https://dexscreener.com/robinhood/0x00d33cec2506c71a74a24c20f48d62dceb9653752998f1016c6474e814ca6839" target="_blank" rel="noopener">Open the chart</a>
+    </p>
   </section>
 
   <section class="about wrap" id="about">
@@ -286,9 +292,9 @@
     <div class="buy-cta reveal">
       <div>
         <b>Contract address</b>
-        <code id="caText2">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code>
+        <code id="caText2">0xDC1bebBE6699242e0fD33E5B8ce2D369e582466a</code>
       </div>
-      <button class="btn btn-primary" data-copy="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">Copy address</button>
+      <button class="btn btn-primary" data-copy="0xDC1bebBE6699242e0fD33E5B8ce2D369e582466a">Copy address</button>
     </div>
   </section>
 
@@ -386,7 +392,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 2.8 11.1c-.9.3-.9 1.5.1 1.7l4.6 1.2 1.7 5c.3.8 1.3 1 1.8.3l2.4-2.8 4.6 3.4c.7.5 1.7.1 1.9-.7L22.4 5.2c.2-.9-.6-1.6-1.4-1.2Z" fill="currentColor" stroke="none"/></svg>
             <span>Telegram</span>
           </a>
-          <a class="soc" href="#" target="_blank" rel="noopener" aria-label="Chart">
+          <a class="soc" href="https://dexscreener.com/robinhood/0x00d33cec2506c71a74a24c20f48d62dceb9653752998f1016c6474e814ca6839" target="_blank" rel="noopener" aria-label="Chart">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17.5 9 12l3.5 3.5L20 7"/><path d="M20 7h-4.5M20 7v4.5"/></svg>
             <span>Dexscreener</span>
           </a>
@@ -422,7 +428,7 @@
   </div>
   <div class="wrap foot-bottom">
     <span>© 2026 HENTER BODEN. All rights reserved to nobody.</span>
-    <span class="foot-ca">CA xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
+    <span class="foot-ca">CA 0xDC1bebBE6699242e0fD33E5B8ce2D369e582466a</span>
   </div>
 </footer>
 
