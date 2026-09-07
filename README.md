@@ -10,9 +10,9 @@ suit `#1D1E32`, tie `#29416D`, desk `#907B68`.
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Whole page: hero, ticker card, lore, tokenomics, how to buy, roadmap, FAQ |
+| `index.html` | Whole page: hero, price card, lore, tokenomics, how to buy, roadmap, FAQ |
 | `styles.css` | Comic look, responsive layout, all colours as CSS variables |
-| `script.js` | Copy address, chart ranges, counters, scroll reveal, mobile nav |
+| `script.js` | Copy address, live price, counters, scroll reveal, mobile nav |
 | `henter.png` | Logo, favicon and character art |
 
 ## Local preview
@@ -29,5 +29,8 @@ Then open http://localhost:4321
   the how to buy block and the footer.
 - Fill in the real X, Telegram and chart links (currently `href="#"`).
 - Update supply, holders and the market stats if they differ.
+- Set `CONFIG.token` at the top of `script.js` to the same contract address. The price card
+  then pulls the live price and 24h change from the GeckoTerminal API (network `robinhood`)
+  every 45 seconds and swaps its PREVIEW badge for LIVE. Until then it shows placeholder numbers.
 
 The site is satire about a fictional cartoon character. Nothing on it is financial advice.

@@ -220,46 +220,16 @@ svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.4;stroke
   border:var(--bd);border-radius:999px;padding:4px 12px;
   transform:rotate(4deg);
 }
-.tk-price{margin-bottom:12px}
+.tk-price{margin-bottom:18px}
 .tk-value{
   font-family:var(--marker);font-size:46px;line-height:1;margin-bottom:6px;
   text-shadow:3px 3px 0 var(--lime);
 }
 .tk-delta{display:flex;align-items:center;gap:7px;font-family:var(--marker);font-size:16px}
 .tk-delta.up{color:#2E7D1E}
+.tk-delta.down{color:var(--red)}
 .tk-delta svg{width:17px;height:17px}
 .tk-delta em{font-style:normal;font-family:var(--hand);color:var(--blue)}
-
-.tk-chart{
-  position:relative;height:200px;margin:0 0 8px;
-  background:#fff;border:var(--bd);border-radius:14px;overflow:hidden;
-}
-.tk-chart svg{width:100%;height:100%}
-.grid line{stroke:rgba(16,16,20,.18);stroke-width:2;stroke-dasharray:6 8}
-.chart-line{
-  fill:none;stroke:var(--ink);stroke-width:5;
-  stroke-linecap:round;stroke-linejoin:round;
-  transition:d .5s ease;
-}
-.chart-fill{fill:var(--lime);stroke:none;transition:d .5s ease}
-.chart-dot{
-  position:absolute;width:16px;height:16px;border-radius:50%;
-  background:var(--red);border:3px solid var(--ink);
-  transform:translate(-50%,-50%);
-  transition:left .5s ease,top .5s ease;
-  animation:wobble 1.6s ease-in-out infinite;
-}
-@keyframes wobble{50%{transform:translate(-50%,-50%) scale(1.25)}}
-
-.tk-ranges{display:flex;gap:8px;margin:12px 0 16px}
-.rg{
-  flex:1;min-height:38px;cursor:pointer;
-  background:var(--paper-2);border:var(--bd);border-radius:11px;
-  font-family:var(--marker);font-size:14px;color:var(--ink);
-  transition:transform .14s ease,background .14s ease;
-}
-.rg:hover{transform:translateY(-2px)}
-.rg.is-active{background:var(--lime);box-shadow:3px 3px 0 var(--ink)}
 
 .hero-copy,.hero-card{min-width:0}
 .tk-foot{
@@ -508,7 +478,7 @@ svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.4;stroke
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1}
   .tape-track{animation:none}
-  .chart-dot{animation:none}
+
   html{scroll-behavior:auto}
 }
 

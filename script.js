@@ -2,6 +2,29 @@
 (function () {
   'use strict';
 
+  /* ------------------------------------------------------------------
+     LIVE DATA CONFIG
+
+     Paste the contract address below once the token is deployed and the
+     price and percentage on the card switch from placeholder numbers to
+     real market data (GeckoTerminal onchain API, no key needed).
+
+     token : the $HENTER contract address on Robinhood Chain
+     pool  : optional. Leave empty and the deepest pool is picked
+             automatically. Set it to pin one specific pair.
+
+     While token is empty, or if the API is unreachable, the card keeps
+     the placeholder numbers and labels itself PREVIEW.
+  ------------------------------------------------------------------ */
+  var CONFIG = {
+    network: 'robinhood',
+    token: '',
+    pool: '',
+    refreshMs: 45000
+  };
+
+  var API = 'https://api.geckoterminal.com/api/v2';
+
   /* ---------- mobile nav ---------- */
   var toggle = document.getElementById('navToggle');
   var links = document.getElementById('navLinks');
@@ -78,117 +101,113 @@
     });
   });
 
-  /* ---------- price chart ---------- */
-  var W = 600;
-  var H = 240;
-  var PAD = 14;
+  /* ---------- price card ---------- */
+  var priceEl = document.getElementById('price');
+  var deltaEl = document.getElementById('delta');
+  var badgeEl = document.querySelector('.tk-badge');
+  var poolAddress = '';
 
-  var line = document.getElementById('chartLine');
-  var fill = document.getElementById('chartFill');
-  var dot = document.getElementById('chartDot');
-  var chart = document.getElementById('chart');
-
-  /* deterministic pseudo random so the chart looks the same on every load */
-  function rng(seed) {
-    var s = seed;
-    return function () {
-      s = (s * 1103515245 + 12345) % 2147483648;
-      return s / 2147483648;
-    };
+  function formatPrice(n) {
+    if (!isFinite(n) || n <= 0) return '$0.00';
+    if (n >= 1) return '$' + n.toFixed(2);
+    if (n >= 0.01) return '$' + n.toFixed(4);
+    /* tiny numbers: keep four significant digits */
+    var decimals = Math.min(18, Math.abs(Math.floor(Math.log10(n))) + 4);
+    return '$' + n.toFixed(decimals);
   }
 
-  function series(seed, points, drift, noise) {
-    var rand = rng(seed);
-    var out = [];
-    var v = 0.5;
-    for (var i = 0; i < points; i++) {
-      v += (rand() - 0.5) * noise + drift;
-      out.push(v);
-    }
-    return out;
+  function formatPct(n) {
+    return (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
   }
 
-  var DATA = {
-    '1D': series(7, 42, 0.006, 0.12),
-    '1W': series(21, 54, 0.008, 0.15),
-    '1M': series(53, 64, 0.011, 0.17),
-    'ALL': series(99, 80, 0.014, 0.14)
-  };
-
-  function toPath(values) {
-    var min = Math.min.apply(null, values);
-    var max = Math.max.apply(null, values);
-    var span = max - min || 1;
-    var stepX = (W - PAD * 2) / (values.length - 1);
-    var pts = values.map(function (v, i) {
-      return [
-        PAD + i * stepX,
-        PAD + (1 - (v - min) / span) * (H - PAD * 2)
-      ];
-    });
-
-    var d = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
-    for (var i = 0; i < pts.length - 1; i++) {
-      var a = pts[i];
-      var b = pts[i + 1];
-      var cx = (a[0] + b[0]) / 2;
-      d += ' C' + cx.toFixed(1) + ' ' + a[1].toFixed(1) +
-           ' ' + cx.toFixed(1) + ' ' + b[1].toFixed(1) +
-           ' ' + b[0].toFixed(1) + ' ' + b[1].toFixed(1);
-    }
-    return { d: d, last: pts[pts.length - 1] };
+  function setBadge(text) {
+    if (badgeEl) badgeEl.textContent = text;
   }
 
-  function placeDot(last) {
-    if (!dot || !chart) return;
-    var box = chart.getBoundingClientRect();
-    if (!box.width) return;
-    dot.style.left = (last[0] / W) * box.width + 'px';
-    dot.style.top = (last[1] / H) * box.height + 'px';
-  }
-
-  var currentLast = null;
-
-  function drawRange(key) {
-    var res = toPath(DATA[key] || DATA.ALL);
-    if (line) line.setAttribute('d', res.d);
-    if (fill) {
-      fill.setAttribute(
+  function setDelta(pct, label) {
+    if (!deltaEl) return;
+    var span = deltaEl.querySelector('span');
+    var em = deltaEl.querySelector('em');
+    var arrow = deltaEl.querySelector('svg path');
+    if (span) span.textContent = formatPct(pct);
+    if (em && label) em.textContent = label;
+    deltaEl.classList.toggle('up', pct >= 0);
+    deltaEl.classList.toggle('down', pct < 0);
+    if (arrow) {
+      arrow.setAttribute(
         'd',
-        res.d + ' L' + (W - PAD) + ' ' + H + ' L' + PAD + ' ' + H + ' Z'
+        pct >= 0 ? 'M12 19V5M12 5l-6 6M12 5l6 6' : 'M12 5v14M12 19l-6-6M12 19l6-6'
       );
     }
-    currentLast = res.last;
-    placeDot(res.last);
   }
 
-  drawRange('ALL');
-  window.addEventListener('resize', function () {
-    if (currentLast) placeDot(currentLast);
-  });
+  /* placeholder flicker until a real pool is wired up */
+  var demoTimer = setInterval(function () {
+    if (!priceEl || poolAddress) return;
+    var next = 0.04206 * (1 + (Math.random() - 0.45) * 0.02);
+    priceEl.textContent = '$' + next.toFixed(5);
+  }, 2600);
 
-  var ranges = document.getElementById('ranges');
-  if (ranges) {
-    ranges.addEventListener('click', function (e) {
-      var btn = e.target.closest('.rg');
-      if (!btn) return;
-      ranges.querySelectorAll('.rg').forEach(function (b) {
-        b.classList.toggle('is-active', b === btn);
+  function api(path) {
+    return fetch(API + path, { headers: { accept: 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
       });
-      drawRange(btn.getAttribute('data-range'));
-    });
   }
 
-  /* ---------- live price flicker ---------- */
-  var priceEl = document.getElementById('price');
-  var base = 0.04206;
-
-  if (priceEl) {
-    setInterval(function () {
-      var next = base * (1 + (Math.random() - 0.45) * 0.02);
-      priceEl.textContent = '$' + next.toFixed(5);
-    }, 2600);
+  function resolvePool() {
+    if (CONFIG.pool) return Promise.resolve(CONFIG.pool);
+    return api('/networks/' + CONFIG.network + '/tokens/' + CONFIG.token + '/pools')
+      .then(function (res) {
+        var pools = (res && res.data) || [];
+        if (!pools.length) throw new Error('no pools for this token yet');
+        pools.sort(function (a, b) {
+          return parseFloat(b.attributes.reserve_in_usd || 0) -
+                 parseFloat(a.attributes.reserve_in_usd || 0);
+        });
+        /* ids come back as "network_address" */
+        var attr = pools[0].attributes || {};
+        return attr.address || String(pools[0].id).split('_').pop();
+      });
   }
+
+  function loadStats() {
+    return api('/networks/' + CONFIG.network + '/pools/' + poolAddress)
+      .then(function (res) {
+        var a = (res && res.data && res.data.attributes) || {};
+        var price = parseFloat(a.base_token_price_usd);
+        if (priceEl && isFinite(price)) priceEl.textContent = formatPrice(price);
+
+        var h24 = a.price_change_percentage && parseFloat(a.price_change_percentage.h24);
+        if (isFinite(h24)) setDelta(h24, 'Last 24h');
+      });
+  }
+
+  function goLive() {
+    if (!CONFIG.token) return;
+
+    resolvePool()
+      .then(function (addr) {
+        poolAddress = addr;
+        clearInterval(demoTimer);
+        setBadge('LIVE');
+        return loadStats();
+      })
+      .then(function () {
+        setInterval(function () {
+          loadStats().catch(function () {});
+        }, CONFIG.refreshMs);
+      })
+      .catch(function (err) {
+        /* no pool yet, rate limited, offline: keep the placeholder numbers */
+        setBadge('PREVIEW');
+        if (window.console) console.warn('[henter] live data unavailable:', err.message);
+      });
+  }
+
+  setBadge(CONFIG.token ? 'LIVE' : 'PREVIEW');
+  goLive();
 
   /* ---------- counters ---------- */
   function runCounter(el) {
